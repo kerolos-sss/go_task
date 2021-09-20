@@ -1,17 +1,31 @@
 package main
 
 import (
+	"crypto/tls"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+
+	"github.com/antchfx/htmlquery"
 )
 
 func main() {
 	fmt.Println("hi I am a func")
 
-	baseUrl := "http://youtube.com"
-	response, err := http.Get(baseUrl)
+	baseUrl := "https://youtube.com"
+
+	config := tls.Config{
+		InsecureSkipVerify: true,
+	}
+	transport := http.Transport{
+		TLSClientConfig: &config,
+	}
+	client := http.Client{
+		Transport: &transport,
+	}
+
+	response, err := client.Get(baseUrl)
 
 	checkError(err)
 
@@ -20,7 +34,11 @@ func main() {
 	body, err := ioutil.ReadAll(response.Body)
 
 	checkError(err)
-	fmt.Println(body)
+
+	rootNode, err := htmlquery.LoadDoc(string(body))
+	checkError(err)
+	fmt.Println(rootNode)
+
 }
 
 func checkError(err error) {
