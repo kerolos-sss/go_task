@@ -35,3 +35,8 @@ about the contents of the page:
     - https://stackoverflow.com/questions/14975000/how-can-i-detect-a-login-form-in-a-webpage-using-javascript
 
 
+## testing extra commands
+
+```
+go test ./scraper -v
+```

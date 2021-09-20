@@ -5,15 +5,17 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 
-	"github.com/antchfx/htmlquery"
+	"os"
+	"project/scraper"
 )
 
 func main() {
 	fmt.Println("hi I am a func")
 
 	baseUrl := "https://youtube.com"
+
+	scraper.Scrape(baseUrl)
 
 	// avoid declaring root trusted certs in the system
 	// BUT SACRIFICE SECURITY
@@ -37,11 +39,12 @@ func main() {
 
 	checkError(err)
 
-	rootNode, err := htmlquery.LoadDoc(string(body))
-	checkError(err)
-	fmt.Println(rootNode)
+	// rootNode, err := htmlquery.LoadDoc(string(body))
+	// checkError(err)
+	fmt.Println(body)
 
 	// I think using colly will provide an executed rendered page (not just the initial html)
+	// I don't think so anymore
 	// I will read some docs for that
 
 }
