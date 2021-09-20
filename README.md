@@ -26,12 +26,12 @@ about the contents of the page:
 
 ## assumptions
 
-- links only means 'a' tags, only after the page is fully rendered.
+- elements will be detected only on the page initial html response.
+- links only means 'a' tags.
 - generated on user interaction eg( paged 'a' tags, etc. ... ) will not be detected/collected.
 - links will be gathered exactly so we may find the same link but ending by a '/' as different links
 - inaccessibility is determined by an html error codes only
-- login form is to be detected if it is intrinsic to the page not a popup or a generated html element
-- I will be using a simple way of detection that can make false positives and negatives
-- https://stackoverflow.com/questions/14975000/how-can-i-detect-a-login-form-in-a-webpage-using-javascript
+- I will be using a simple way of detection for the login form that can make false positives and negatives
+    - https://stackoverflow.com/questions/14975000/how-can-i-detect-a-login-form-in-a-webpage-using-javascript
 
 
