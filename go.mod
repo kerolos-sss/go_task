@@ -1,4 +1,4 @@
-module example.com/m/v2
+module example.com/scraper
 
 go 1.17
 

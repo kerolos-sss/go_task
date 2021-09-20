@@ -15,6 +15,8 @@ func main() {
 
 	baseUrl := "https://youtube.com"
 
+	// avoid declaring root trusted certs in the system
+	// BUT SACRIFICE SECURITY
 	config := tls.Config{
 		InsecureSkipVerify: true,
 	}
@@ -38,6 +40,9 @@ func main() {
 	rootNode, err := htmlquery.LoadDoc(string(body))
 	checkError(err)
 	fmt.Println(rootNode)
+
+	// I think using colly will provide an executed rendered page (not just the initial html)
+	// I will read some docs for that
 
 }
 
