@@ -1,21 +1,25 @@
 package scraper
 
 import (
+	"fmt"
+	"log"
 	"testing"
 )
 
-// func TestScraper(t *testing.T) {
-// 	// want := "Hello, world."
-// 	fmt.Println("starting testing scraper")
+func TestScraper(t *testing.T) {
+	// want := "Hello, world."
+	fmt.Println("starting testing scraper")
 
-// 	got := Scrape("https://youtube.com")
-// 	if got == nil {
-// 		t.Errorf("Scrape = %q, want %q", got, "not nil")
-// 	}
-// 	// log.Println("Data")
-// 	// fmt.Println(got)
+	urls, headings := Scrape("https://youtube.com")
+	if urls == nil || headings == nil {
+		t.Errorf("Scrape = %q, want %q", urls, "not nil")
+	}
 
-// }
+	log.Println("Data")
+	log.Println(urls)
+	log.Println(headings)
+
+}
 
 func TestIsAccessible(t *testing.T) {
 	url1 := "https://google.com/dsgdfgds"

@@ -7,10 +7,15 @@ import (
 	"net/http"
 
 	"os"
+	"project/api"
 	"project/scraper"
 )
 
 func main() {
+	srv := api.NewServer()
+	http.ListenAndServe(":8080", srv)
+}
+func main1() {
 	fmt.Println("hi I am a func")
 
 	baseUrl := "https://youtube.com"
