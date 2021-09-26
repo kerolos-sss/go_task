@@ -50,7 +50,7 @@ func TestGetPageDetails(t *testing.T) {
 		fmt.Println(tags)
 	}
 
-	url2 := "https://google.com"
+	url2 := "https://accounts.google.com/AccountChooser?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fcreate%3Fusp%3Dforms_alc&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fcreate%3Fusp%3Dforms_alc&service=wise&ltmpl=forms"
 	accessible2, tags2 := GetPageDetails(url2)
 	if len(accessible2) > 0 || len(tags2) > 0 {
 		fmt.Println("ACCESSIBLE")

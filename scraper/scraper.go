@@ -3,6 +3,7 @@ package scraper
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -106,13 +107,16 @@ func GetPageDetails(pageUrl string) (map[string]Accessable, map[string]int) {
 	for key, count := range processedURLs {
 		// and then use it to parse relative URLs
 		group.Add(1)
-		go func() {
+		// fmt.Println("worker for: " + key)
+		go func(key string, count int) {
+
+			fmt.Println("worker for: " + strconv.Itoa(count) + "   key :" + key)
 			accessable[key] = Accessable{
 				count:      count,
 				accessable: DetectIsAccessible(key),
 			}
 			group.Done()
-		}()
+		}(key, count)
 	}
 
 	group.Wait()
