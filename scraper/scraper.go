@@ -1,7 +1,6 @@
 package scraper
 
 import (
-	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -106,9 +105,8 @@ func Scrape(pageURL string) (map[string]int, map[string]int, pATTERS) {
 		url := strings.Split(key, separatorUUID)[1]
 		urls[url] += 1
 	}
-	passwordFields[uuid.NewString()] = hasNonPasswordNonHiddenFields && 2 > len(passwordFields) && len(passwordFields) > 0
-	fmt.Println("passwordFields#############")
-	fmt.Println(passwordFields)
+
+	otherAtters.hasLogin = hasNonPasswordNonHiddenFields && 2 > len(passwordFields) && len(passwordFields) > 0
 	return urls, tagsCount, otherAtters
 }
 
