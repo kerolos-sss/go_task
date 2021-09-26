@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"project/scraper"
 
@@ -20,7 +21,7 @@ type Server struct {
 }
 
 type ScrapePageRequestBody struct {
-	url string `json:"url"`
+	Url string `json:"url"`
 }
 
 func NewServer() *Server {
@@ -46,11 +47,14 @@ func (s *Server) helloWorld() http.HandlerFunc {
 func (s *Server) scrapePageDetailsAndCount() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
 		var body ScrapePageRequestBody
+		fmt.Println("BODY #s####")
+		fmt.Println(r.Body)
+
 		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 			http.Error(rw, err.Error(), http.StatusBadRequest)
 			return
 		}
-		counts := scraper.GetPageDetailsAndCounts(body.url)
+		counts := scraper.GetPageDetailsAndCounts(body.Url)
 
 		rw.Header().Set("Content-Type", "application/json")
 		if err := json.NewEncoder(rw).Encode(counts); err != nil {

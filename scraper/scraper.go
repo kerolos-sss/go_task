@@ -1,6 +1,7 @@
 package scraper
 
 import (
+	"fmt"
 	"log"
 	"regexp"
 	"strings"
@@ -171,7 +172,10 @@ func GetPageDetails(pageUrl string) (map[string]pAccessable, map[string]int, pAT
 }
 
 func GetPageDetailsAndCounts(pageUrl string) Counts {
+	fmt.Println("SCRAPPING #####")
+	fmt.Println(pageUrl)
 	accessable, tagsCount, otherAtters := GetPageDetails(pageUrl)
+
 	internalCount := 0
 	externalCount := 0
 	inAccessibleCount := 0

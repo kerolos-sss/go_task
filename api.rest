@@ -13,7 +13,6 @@ content-type: application/json
 
 {
     "url": "https://accounts.google.com/AccountChooser?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fcreate%3Fusp%3Dforms_alc&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fcreate%3Fusp%3Dforms_alc&service=wise&ltmpl=forms",
-    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
 }
 
 
