@@ -7,9 +7,12 @@ make sure you are using go v 1.17
 ```
 go run main.go
 ```
+
+- in your internet browser open http://localhost:8080/static/
 - a webpage will open 
 - supply the needed url to get info about
 - press submit button 
+- a new page with the response will open (JSON for now)
 - wait for the response
 
 
