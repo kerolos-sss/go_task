@@ -26,6 +26,7 @@ about the contents of the page:
 
 ## assumptions
 
+- considered the DOCTYPE tag text as the html version
 - elements will be detected only on the page initial html response.
 - links only means 'a' tags.
 - generated on user interaction eg( paged 'a' tags, etc. ... ) will not be detected/collected.
@@ -40,3 +41,4 @@ about the contents of the page:
 ```
 go test ./scraper -v
 ```
+starting again Sum 11:43 am

@@ -13,12 +13,16 @@ import (
 	"github.com/google/uuid"
 )
 
-type Accessable struct {
+type pAccessable struct {
 	count      int
 	internal   bool
 	accessable bool
 }
-
+type pATTERS struct {
+	htmlVersion string
+	title       string
+	hasLogin    bool
+}
 type Counts struct {
 	htmlVersion string
 	title       string
@@ -38,7 +42,7 @@ type Counts struct {
 * Testing document
 * returns (<a> tags Href, h# tags count)
  */
-func Scrape(pageURL string) (map[string]int, map[string]int, string) {
+func Scrape(pageURL string) (map[string]int, map[string]int, pATTERS) {
 
 	// I chose to count using a dict with UUID to avoid count issues with concurrency
 	// I thought of regular int inside the dict but I don't know how it would behave in racing
@@ -48,36 +52,32 @@ func Scrape(pageURL string) (map[string]int, map[string]int, string) {
 	aCollections := make(map[string]bool)
 
 	separatorUUID := uuid.NewString()
-	doctype := "1"
+	otherAtters := pATTERS{
+		htmlVersion: "1",
+		title:       "",
+		hasLogin:    false,
+	}
 	re := regexp.MustCompile(`<[!]{0,1}DOCTYPE.*>`)
 	mainCollector.OnScraped(func(r *colly.Response) {
-		fmt.Println("got a response")
-		fmt.Println(string(r.Body[:100]))
 		found := re.Find(r.Body)
 		if len(found) > 0 {
-			doctype = string(found)
+			otherAtters.htmlVersion = string(found)
 		}
-
-		fmt.Println(doctype)
-		fmt.Println(doctype)
-		fmt.Println(doctype)
-		fmt.Println(doctype)
-
 	})
-	// mainCollector.OnHTML("body", func(bodyElement *colly.HTMLElement) {
-	// 	fmt.Println("got a body")
-	// 	for i, node := range bodyElement.DOM.Parent().Nodes {
-	// 		fmt.Println("got a DOCTYPE : index: " + strconv.Itoa(i) + " type: ")
-	// 		fmt.Println(node.Data)
-	// 		fmt.Println(node.Attr)
-	// 		fmt.Println(node.Namespace)
-	// 		fmt.Println(*node.Parent)
-	// 		fmt.Println("####")
-	// 	}
-	// })
-	// mainCollector.OnHTML("!DOCTYPE", func(element *colly.HTMLElement) {
-	// })
 
+	mainCollector.OnHTML("title", func(titleElement *colly.HTMLElement) {
+		otherAtters.title = titleElement.Text
+	})
+
+	passwordFields := make(map[string]bool)
+	hasNonPasswordNonHiddenFields := false
+	mainCollector.OnHTML("form input", func(inputElement *colly.HTMLElement) {
+		if inputElement.Attr("type") == "password" {
+			passwordFields[uuid.NewString()] = true
+		} else if inputElement.Attr("type") != "hidden" {
+			hasNonPasswordNonHiddenFields = true
+		}
+	})
 	mainCollector.OnHTML("a", func(aElement *colly.HTMLElement) {
 		uuidStr := uuid.NewString()
 		aCollections[uuidStr+separatorUUID+aElement.Attr("href")] = true
@@ -106,8 +106,10 @@ func Scrape(pageURL string) (map[string]int, map[string]int, string) {
 		url := strings.Split(key, separatorUUID)[1]
 		urls[url] += 1
 	}
-
-	return urls, tagsCount, doctype
+	passwordFields[uuid.NewString()] = hasNonPasswordNonHiddenFields && 2 > len(passwordFields) && len(passwordFields) > 0
+	fmt.Println("passwordFields#############")
+	fmt.Println(passwordFields)
+	return urls, tagsCount, otherAtters
 }
 
 func DetectIsAccessible(url string) bool {
@@ -123,7 +125,7 @@ func DetectIsAccessible(url string) bool {
 	return err == nil
 }
 
-func GetPageDetails(pageUrl string) (map[string]Accessable, map[string]int, string) {
+func GetPageDetails(pageUrl string) (map[string]pAccessable, map[string]int, pATTERS) {
 
 	// parse only base url
 	base, err := url.Parse(pageUrl)
@@ -131,7 +133,7 @@ func GetPageDetails(pageUrl string) (map[string]Accessable, map[string]int, stri
 		log.Fatal(err)
 	}
 
-	urls, tagsCount, doctype := Scrape(pageUrl)
+	urls, tagsCount, otherAtters := Scrape(pageUrl)
 	processedURLs := make(map[string]int)
 
 	for key, count := range urls {
@@ -144,7 +146,7 @@ func GetPageDetails(pageUrl string) (map[string]Accessable, map[string]int, stri
 		processedURLs[u.String()] += count
 	}
 
-	accessable := make(map[string]Accessable)
+	accessable := make(map[string]pAccessable)
 
 	var group sync.WaitGroup
 
@@ -156,7 +158,7 @@ func GetPageDetails(pageUrl string) (map[string]Accessable, map[string]int, stri
 
 			// fmt.Println("worker for: " + strconv.Itoa(count) + "   key :" + key)
 			u, _ := url.Parse(key)
-			accessable[key] = Accessable{
+			accessable[key] = pAccessable{
 				count:      count,
 				accessable: DetectIsAccessible(key),
 				internal:   u.Host == base.Host,
@@ -167,7 +169,7 @@ func GetPageDetails(pageUrl string) (map[string]Accessable, map[string]int, stri
 
 	group.Wait()
 
-	return accessable, tagsCount, doctype
+	return accessable, tagsCount, otherAtters
 }
 
 // func GetPageDetails(pageUrl string) Counts {
