@@ -32,6 +32,7 @@ func (s *Server) setupRoutes() {
 }
 func (s *Server) helloWorld() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
+		// id :=  mux.Vars(r)["id"]
 		rw.Header().Set("Content-Type", "application/html")
 		rw.Write([]byte("Hello World"))
 	}
