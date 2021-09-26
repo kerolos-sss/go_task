@@ -13,9 +13,30 @@ content-type: application/json
 
 {
     "url": "https://accounts.google.com/AccountChooser?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fcreate%3Fusp%3Dforms_alc&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fcreate%3Fusp%3Dforms_alc&service=wise&ltmpl=forms",
+    "time": "Wed, 21 Oct 2015 18:27:50 GMT"
 }
+
+
+### req 
+POST http://localhost:8080/pageDetails HTTP/1.1
+# content-type: multipart/form-data
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="url" 
+
+https://accounts.google.com/AccountChooser?continue=https%3A%2F%2Fdocs.google.com%2Fforms%2Fcreate%3Fusp%3Dforms_alc&followup=https%3A%2F%2Fdocs.google.com%2Fforms%2Fcreate%3Fusp%3Dforms_alc&service=wise&ltmpl=forms
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
 
 
 #### Req 2
 GET http://localhost:8080/page HTTP/1.1
+
+
+
+#### Req 2
+GET http://localhost:8080/static/ HTTP/1.1
+
+#### Req 2
+GET http://localhost:8080/static/index.html HTTP/1.1
 

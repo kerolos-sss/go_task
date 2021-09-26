@@ -36,6 +36,8 @@ func (s *Server) setupRoutes() {
 	s.HandleFunc("/pageDetails", s.scrapePageDetailsAndCount()).Methods("POST")
 	s.HandleFunc("/page", s.creatShoppingItem()).Methods("POST")
 	s.HandleFunc("/page", s.helloWorld()).Methods("GET")
+	fs := http.FileServer(http.Dir("./static"))
+	s.Handle("/static/", http.StripPrefix("/static/", fs))
 }
 func (s *Server) helloWorld() http.HandlerFunc {
 	return func(rw http.ResponseWriter, r *http.Request) {
@@ -50,10 +52,27 @@ func (s *Server) scrapePageDetailsAndCount() http.HandlerFunc {
 		fmt.Println("BODY #s####")
 		fmt.Println(r.Body)
 
-		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-			http.Error(rw, err.Error(), http.StatusBadRequest)
-			return
+		if r.Header.Get("Content-Type") == "application/json" {
+			if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+				http.Error(rw, err.Error(), http.StatusBadRequest)
+				return
+			}
+		} else {
+			body.Url = ""
+			fmt.Println("###d##")
+			r.ParseMultipartForm(2000)
+			fmt.Println(r.Form)
+			// b, _ := ioutil.ReadAll(r.Body)
+			// fmt.Println(string(b))
+			urlArr := r.Form["url"]
+
+			if len(urlArr) > 0 {
+				body.Url = urlArr[0]
+			}
+			fmt.Println(urlArr)
+
 		}
+
 		counts := scraper.GetPageDetailsAndCounts(body.Url)
 
 		rw.Header().Set("Content-Type", "application/json")
