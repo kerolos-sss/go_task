@@ -23,18 +23,18 @@ type pATTERS struct {
 	hasLogin    bool
 }
 type Counts struct {
-	htmlVersion string
-	title       string
-	h1          int
-	h2          int
-	h3          int
-	h4          int
-	h5          int
-	h6          int
-	internal    int
-	external    int
-	inacessable int
-	hasLogin    bool
+	HtmlVersion string `json:"htmlVersion"`
+	Title       string `json:"title"`
+	H1          int    `json:"h1"`
+	H2          int    `json:"h2"`
+	H3          int    `json:"h3"`
+	H4          int    `json:"h4"`
+	H5          int    `json:"h5"`
+	H6          int    `json:"h6"`
+	Internal    int    `json:"internal"`
+	External    int    `json:"external"`
+	Inacessable int    `json:"inacessable"`
+	HasLogin    bool   `json:"hasLogin"`
 }
 
 /**
@@ -170,7 +170,33 @@ func GetPageDetails(pageUrl string) (map[string]pAccessable, map[string]int, pAT
 	return accessable, tagsCount, otherAtters
 }
 
-// func GetPageDetails(pageUrl string) Counts {
-// 	accessable, tagsCount = GetPageDetails(pageUrl)
-// 	return Counts{}
-// }
+func GetPageDetailsAndCounts(pageUrl string) Counts {
+	accessable, tagsCount, otherAtters := GetPageDetails(pageUrl)
+	internalCount := 0
+	externalCount := 0
+	inAccessibleCount := 0
+	for _, props := range accessable {
+		if !props.accessable {
+			inAccessibleCount += props.count
+		}
+		if props.internal {
+			internalCount += props.count
+		} else {
+			externalCount += props.count
+		}
+	}
+	return Counts{
+		HtmlVersion: otherAtters.htmlVersion,
+		Title:       otherAtters.title,
+		H1:          tagsCount["h1"],
+		H2:          tagsCount["h2"],
+		H3:          tagsCount["h3"],
+		H4:          tagsCount["h4"],
+		H5:          tagsCount["h5"],
+		H6:          tagsCount["h6"],
+		Internal:    internalCount,
+		External:    externalCount,
+		Inacessable: inAccessibleCount,
+		HasLogin:    otherAtters.hasLogin,
+	}
+}
